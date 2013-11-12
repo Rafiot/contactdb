@@ -2,6 +2,9 @@
 
 {% block content %}
     {% for org in orgs %}
-      <h2><a href="{{ url_for('orgs.detail', slug=org.slug) }}">{{ org.name }}</a></h2>
+      <h2>
+          <a href="{{ url_for('orgs.detail', slug=org.slug) }}">{{ org.name }}</a>
+          - {{ org.email }} <br/>
+      </h2>
     {% endfor %}
 {% endblock %}
