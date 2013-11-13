@@ -25,7 +25,7 @@ class PGPKey(db.Document):
     expires = db.DateTimeField(verbose_name="Expires")
 
     def get_absolute_url(self):
-        return url_for('pgpkey')
+        return url_for('pgpkeys', kwargs={"slug": self.keyid})
 
     def __unicode__(self):
         return self.pgp_key_id
@@ -71,7 +71,7 @@ class Organisation(db.Document):
     business_hh_start = db.DateTimeField(verbose_name="Business hours start")
     business_hh_end = db.DateTimeField(verbose_name="Business hours end")
     date_established = db.DateTimeField(verbose_name="Date established")
-    pgp_key = db.ReferenceField(PGPKey)
+    pgpkey = db.ReferenceField(PGPKey)
 
     confirmed = db.BooleanField(verbose_name="Confirmed to exist")
     active = db.BooleanField(verbose_name="Still active")
@@ -85,15 +85,16 @@ class Organisation(db.Document):
     created_at = db.DateTimeField("Created")
     last_updated = db.DateTimeField("Last updated")
 
-    slug = db.StringField(max_length=255, required=True)
 
     def get_absolute_url(self):
-        return url_for('orgs', kwargs={"slug": self.slug})
+        return url_for('orgs', kwargs={"slug": self.name})
 
     def __unicode__(self):
         return self.name
 
 class Person(User):
+    firstname = db.StringField(max_length=100)
+    lastname = db.StringField(max_length=100)
     organisation = db.ReferenceField(Organisation)
     orgPocType = db.StringField(max_length=30)
     title = db.StringField(max_length=100)

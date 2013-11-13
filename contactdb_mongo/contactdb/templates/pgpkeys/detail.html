@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+  <div class="page-header">
+    <h1>{{ pgpkey.keyid }}</h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <h2> {{ pgpkey.fingerprint }} </h2>
+  <h3>UIDs:</h3>
+  <ul>
+  {% for uid in pgpkey.uids %}
+    <li>{{ uid }}</li>
+  {% endfor %}
+  </ul>
+  <h3>Creation date:</h3> {{ pgpkey.created }}
+  {% if pgpkey.expires %}
+    <h3>Expiration date:</h3>  {{ pgpkey.expires }}
+  {% endif %}
+  <h3>Key:</h3>
+  <pre> {{ pgpkey.key }} </pre>
+{% endblock %}

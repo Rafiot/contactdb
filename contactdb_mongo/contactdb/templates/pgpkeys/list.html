@@ -11,11 +11,11 @@
     </thead>
     {% for org in orgs %}
       <tr>
-          <td><a href="{{ url_for('orgs.detail', name=org.name) }}">
+          <td><a href="{{ url_for('orgs.detail', slug=org.slug) }}">
                   {{ org.name }}
           </a></td>
-          {% if org.pgpkey %}
-            <td><a href="{{ url_for('pgpkeys.detail', keyid=org.pgpkey.keyid) }}">
+          {% if org.pgp_key is not None %}
+            <td><a href="{{ url_for('pgpkey.detail', slug=pgpkey.keyid) }}">
                     {{ org.email }}
             </a></td>
           {% else %}

@@ -12,6 +12,8 @@ def register_blueprints(app):
     # Prevents circular imports
     from contactdb.views import orgs
     app.register_blueprint(orgs)
+    from contactdb.views import pgpkeys
+    app.register_blueprint(pgpkeys)
 
 register_blueprints(app)
 

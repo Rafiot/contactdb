@@ -67,7 +67,7 @@ o = Organisation(
         name = 'CIRCL',
         fullname = 'Computer Incident Response Center Luxembourg',
         iscert = True,
-        address = '41, avenue de la garea\nL-1611 Luxembourg\nGrand-Duchy of Luxembourg',
+        address = '41, avenue de la gare\nL-1611 Luxembourg\nGrand-Duchy of Luxembourg',
         phone = '(+352) 247 88444',
         email = 'CIRCL@tata.lu',
         website = 'http://circl.lu/',
@@ -75,10 +75,9 @@ o = Organisation(
         business_hh_start = datetime.datetime(1, 1 ,1 ,9, 00),
         business_hh_end = datetime.datetime(1, 1 ,1 ,17, 00),
         date_established = datetime.datetime(2011, 01, 22),
-        pgp_key = pgpkey,
+        pgpkey = pgpkey,
         confirmed = True,
-        active = True,
-        slug = 'circl')
+        active = True)
 
 o.save()
 
@@ -90,11 +89,13 @@ im.save()
 
 person = Person(
         username = 'raphael',
+        firstname = 'Raphael',
+        lastname = 'Vinot',
         organisation = o,
         title = 'Operator',
         phone = '(+352) 247 88444',
         email = ['RAPHAEL@tata.lu'],
-        pgp_key = pgpkey,
+        pgpkey = pgpkey,
         im = im,
         website = 'http://circl.lu/',
         timezone = 'CET'
