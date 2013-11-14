@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block page_header %}
+  <div class="page-header">
+    <h1>{{ im.handle }}</h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <h2> Fingerprints for this handle: </h2>
+  <ul>
+  {% for fp in im.otr %}
+    <li><pre>{{ fp }}</pre></li>
+  {% endfor %}
+  </ul>
+{% endblock %}

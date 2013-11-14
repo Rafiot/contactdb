@@ -9,6 +9,27 @@
 
 {% block content %}
   <h2> {{ org.fullname }} </h2>
+  <h3>Members:</h3>
+  <ul>
+  {% for member in org.members %}
+    <li>
+    <a href="{{ url_for('persons.detail', username=member.username) }}">
+        {{member.username}}
+    </a>
+    {% if member.firstname or member.lastname %}
+      ({{ member.firstname }} {{ member.lastname }})
+    {% endif %}
+
+    {% if member.pgpkey %}
+      - <a href="{{ url_for('pgpkeys.detail', keyid=member.pgpkey.keyid) }}">
+          {{ member.pgpkey.uids[0] }}
+      </a>
+    {% elif member.emails %}
+      - {{ member.emails[0] }}
+    {% endif %}
+    </li>
+  {% endfor %}
+  </ul>
   <h3>Address:</h3>
   <pre> {{org.address }} </pre>
 {% endblock %}

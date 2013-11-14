@@ -14,6 +14,10 @@ def register_blueprints(app):
     app.register_blueprint(orgs)
     from contactdb.views import pgpkeys
     app.register_blueprint(pgpkeys)
+    from contactdb.views import persons
+    app.register_blueprint(persons)
+    from contactdb.views import ims
+    app.register_blueprint(ims)
 
 register_blueprints(app)
 

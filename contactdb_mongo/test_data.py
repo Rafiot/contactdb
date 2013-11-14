@@ -47,19 +47,8 @@ rvQUK/Y=
 -----END PGP PUBLIC KEY BLOCK-----
 """
 
-pgpkey = PGPKey(key = infokey)
-
-gpg = gnupg.GPG(homedir="testing")
-r = gpg.import_keys(infokey)
-pgpkey.fingerprint = r.results[0]['fingerprint']
-for key in gpg.list_keys():
-    if key['fingerprint'] == pgpkey.fingerprint:
-        pgpkey.keyid = key['keyid']
-        pgpkey.created = datetime.datetime.fromtimestamp(int(key['date']))
-        if len(key['expires']) > 0:
-            pgpkey.expires = datetime.datetime.fromtimestamp(int(key['expires']))
-        pgpkey.uids = key['uids']
-
+pgpkey = PGPKey()
+pgpkey.add_key('testing', infokey)
 pgpkey.save()
 
 # add CIRCL
@@ -69,7 +58,7 @@ o = Organisation(
         iscert = True,
         address = '41, avenue de la gare\nL-1611 Luxembourg\nGrand-Duchy of Luxembourg',
         phone = '(+352) 247 88444',
-        email = 'CIRCL@tata.lu',
+        email = 'info@circl.lu',
         website = 'http://circl.lu/',
         timezone = 'CET',
         business_hh_start = datetime.datetime(1, 1 ,1 ,9, 00),
@@ -91,16 +80,17 @@ person = Person(
         username = 'raphael',
         firstname = 'Raphael',
         lastname = 'Vinot',
-        organisation = o,
+        organisation = [o],
         title = 'Operator',
         phone = '(+352) 247 88444',
-        email = ['RAPHAEL@tata.lu'],
+        emails = ['RAPHAEL@tata.lu', 'info@circl.lu'],
         pgpkey = pgpkey,
-        im = im,
+        im = [im],
         website = 'http://circl.lu/',
         timezone = 'CET'
         )
+
 person.save()
+o.members.append(person)
 
-
-
+o.save()

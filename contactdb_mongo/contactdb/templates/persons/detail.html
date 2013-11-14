@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+
+{% block page_header %}
+  <div class="page-header">
+      <h1>{{ person.username }}
+          {% if person.firstname or person.lastname %}
+          - {{ person.firstname }} {{person.lastname}}
+          {% endif%}
+      </h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+<h2>Emails</h2>
+<ul>
+{% for email in  person.emails %}
+    <li>{{ email }}
+    {% if email in person.pgpkey.emails %}
+      -
+      <a href="{{ url_for('pgpkeys.detail', keyid=person.pgpkey.keyid) }}">
+        PGP Key
+      </a>
+    {% endif %}
+    </li>
+{% endfor %}
+</ul>
+<h2>Instant Messaging</h2>
+<ul>
+{% for im in person.im %}
+    <li>{{ im.handle }}
+    {% if im.otr %}
+        -
+        <a href="{{ url_for('ims.detail', handle=im.handle) }}">
+          OTR Fingerprint
+        </a>
+    {% endif %}
+    </li>
+{% endfor %}
+<ul>
+
+{% endblock %}
