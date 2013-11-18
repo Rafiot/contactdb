@@ -48,7 +48,7 @@ rvQUK/Y=
 """
 
 pgpkey = PGPKey()
-pgpkey.add_key('testing', infokey)
+pgpkey.add_key(infokey)
 pgpkey.save()
 
 # add CIRCL

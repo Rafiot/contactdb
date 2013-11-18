@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-import gnupg
 import datetime
 import re
 
 from mongoengine import ValidationError
 from contactdb import db
+from contactdb import gpg
 
 class User(db.Document):
     username = db.StringField(required=True, primary_key=True)
@@ -27,8 +27,7 @@ class PGPKey(db.Document):
     created = db.DateTimeField(verbose_name="Created", required = True)
     expires = db.DateTimeField(verbose_name="Expires")
 
-    def add_key(self, gpg_homedir, ascii_key):
-        gpg = gnupg.GPG(homedir= gpg_homedir)
+    def add_key(self, ascii_key):
         r = gpg.import_keys(ascii_key)
         self.key = ascii_key
         self.fingerprint = r.results[0]['fingerprint']
