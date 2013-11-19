@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import datetime
-import gnupg
 
 from contactdb.models import *
 
@@ -61,8 +60,8 @@ o = Organisation(
         email = 'info@circl.lu',
         website = 'http://circl.lu/',
         timezone = 'CET',
-        business_hh_start = datetime.datetime(1, 1 ,1 ,9, 00),
-        business_hh_end = datetime.datetime(1, 1 ,1 ,17, 00),
+        business_hh_start = datetime.datetime(1900, 1 ,1 ,9, 00),
+        business_hh_end = datetime.datetime(1900, 1 ,1 ,17, 00),
         date_established = datetime.datetime(2011, 01, 22),
         pgpkey = pgpkey,
         confirmed = True,

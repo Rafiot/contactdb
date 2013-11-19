@@ -18,7 +18,7 @@ class User(db.Document):
 
 
 class PGPKey(db.Document):
-    keyid  = db.StringField(max_length=1000, required=True, primary_key=True)
+    keyid  = db.StringField(max_length=1000, required=True)
     fingerprint = db.StringField(max_length=1000, required = True)
     uids = db.ListField(db.StringField(verbose_name="Email (UID)",
         max_length=1000), required = True)
@@ -44,7 +44,7 @@ class PGPKey(db.Document):
                 self.emails.append(email[0])
 
     def __unicode__(self):
-        return self.pgp_key_id
+        return self.keyid
 
 
 class InstantMessaging(db.Document):
@@ -93,7 +93,7 @@ class Person(User):
 
 
 class Organisation(db.Document):
-    name = db.StringField(max_length=100, required = True, primary_key=True)
+    name = db.StringField(max_length=100, required = True)
     fullname = db.StringField(max_length=1000)
     org_path = db.StringField(max_length=5000) # pocandora
     nesting = db.StringField(max_length=5000) # pocandora

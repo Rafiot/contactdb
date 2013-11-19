@@ -9,6 +9,6 @@ wget https://github.com/twbs/bootstrap/releases/download/v${BOOTSTRAP}/bootstrap
     -O bootstrap.zip
 
 unzip -o -d contactdb/ bootstrap.zip
-rsync contactdb/dist/* contactdb/static/
+rsync -av contactdb/dist/* contactdb/static/
 rm -rf contactdb/dist
 rm bootstrap.zip

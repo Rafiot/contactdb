@@ -1,7 +1,7 @@
-from flask import Blueprint, request, redirect, render_template, url_for
+from flask import Blueprint, render_template, request, redirect, url_for
+from flask.ext.mongoengine.wtf import model_form
 from flask.views import MethodView
 
-from flask.ext.mongoengine.wtf import model_form
 from contactdb.models import Person, PGPKey, InstantMessaging, Organisation
 
 class OrgsList(MethodView):
@@ -10,17 +10,59 @@ class OrgsList(MethodView):
         orgs = Organisation.objects.all()
         return render_template('orgs/list.html', orgs=orgs, view = 'orgs')
 
-
 class OrgsDetail(MethodView):
 
     def get(self, name):
         org = Organisation.objects.get_or_404(name=name)
         return render_template('orgs/detail.html', org=org, view = 'orgs')
 
+
+class OrgsAdmin(MethodView):
+
+    def get_context(self, name=None):
+        form_cls = model_form(Organisation)
+
+        if name is not None :
+            org = Organisation.objects.get_or_404(name=name)
+            if request.method == 'POST':
+                form = form_cls(request.form, inital=org._data)
+            else:
+                form = form_cls(obj=org)
+        else:
+            org = Organisation()
+            form = form_cls(request.form)
+
+        context = {
+            "org": org,
+            "form": form,
+            "view": 'orgs',
+            "create": name is None
+        }
+        return context
+
+    def get(self, name):
+        context = self.get_context(name=name)
+        return render_template('orgs/edit.html', **context)
+
+    def post(self, name):
+        context = self.get_context(name)
+        form = context.get('form')
+
+        if form.validate():
+            org = context.get('org')
+            form.populate_obj(org)
+            org.save()
+
+            return redirect(url_for('orgs.detail', name=org.name))
+        return render_template('orgs/edit.html', **context)
+
 # Register the urls
 orgs = Blueprint('orgs', __name__, template_folder='templates')
 orgs.add_url_rule('/orgs/', view_func=OrgsList.as_view('list'))
 orgs.add_url_rule('/orgs/<name>/', view_func=OrgsDetail.as_view('detail'))
+orgs.add_url_rule('/orgs/create/', defaults={'name': None},
+    view_func=OrgsAdmin.as_view('create'))
+orgs.add_url_rule('/orgs/edit/<name>/', view_func=OrgsAdmin.as_view('edit'))
 
 class PGPKeysList(MethodView):
 
