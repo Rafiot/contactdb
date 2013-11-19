@@ -4,6 +4,23 @@ from flask.views import MethodView
 
 from contactdb.models import Person, PGPKey, InstantMessaging, Organisation
 
+class OrgAPI(MethodView):
+
+    def get(self, name):
+        if name is None:
+            return Organisation.objects.all()
+        else:
+            return Organisation.objects.get_or_404(name=name)
+
+    def post(self):
+        Organisation(**request.json).save()
+
+    def delete(self, name):
+        Organisation.objects.get_or_404(name=name).delete()
+
+    def put(self, name):
+        Organisation.objects.get_or_404(name=name).update(**request.json)
+
 class OrgsList(MethodView):
 
     def get(self):
