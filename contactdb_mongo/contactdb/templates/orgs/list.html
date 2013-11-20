@@ -11,7 +11,7 @@
     </thead>
     {% for org in orgs %}
       <tr>
-          <td><a href="{{ url_for('orgs.detail', name=org.name) }}">
+          <td><a href="{{ url_for('orgs.detail', identifier=org.name) }}">
                   {{ org.name }}
           </a></td>
           <td> {{ org.email }}
