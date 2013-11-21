@@ -1,10 +1,20 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from flask.ext.mongoengine.wtf import model_form
+from flask import Blueprint, render_template
 from flask.views import MethodView
 
 from contactdb.models import Person, PGPKey, InstantMessaging, Organisation
 
-from views_abstract import List, Detail, Admin, prepare_blueprint
+from views_abstract import List, Detail, Admin
+
+def prepare_blueprint(basename, vList, vDetail, vAdmin):
+    bp = Blueprint(basename, __name__, template_folder='templates')
+    basepath = '/{}/'.format(basename)
+    bp.add_url_rule(basepath, view_func=vList.as_view('list'))
+    bp.add_url_rule(basepath + '<identifier>/', view_func=vDetail.as_view('detail'))
+    bp.add_url_rule(basepath + 'create/', defaults={'identifier': None},
+        view_func=vAdmin.as_view('create'))
+    bp.add_url_rule(basepath + 'edit/<identifier>/',
+        view_func=vAdmin.as_view('edit'))
+    return bp
 
 
 class OrgsList(List):
@@ -32,12 +42,7 @@ class OrgsAdmin(Admin):
         self.pk = 'name'
 
 # Register the urls
-orgs = Blueprint('orgs', __name__, template_folder='templates')
-orgs.add_url_rule('/orgs/', view_func=OrgsList.as_view('list'))
-orgs.add_url_rule('/orgs/<identifier>/', view_func=OrgsDetail.as_view('detail'))
-orgs.add_url_rule('/orgs/create/', defaults={'name': None},
-    view_func=OrgsAdmin.as_view('create'))
-orgs.add_url_rule('/orgs/edit/<identifier>/', view_func=OrgsAdmin.as_view('edit'))
+orgs = prepare_blueprint('orgs', OrgsList, OrgsDetail, OrgsAdmin)
 
 class PGPKeysList(MethodView):
 

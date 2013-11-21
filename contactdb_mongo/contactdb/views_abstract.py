@@ -1,5 +1,5 @@
 from flask.views import MethodView
-from flask import render_template, request, redirect, url_for, Blueprint
+from flask import render_template, request, redirect, url_for
 from flask.ext.mongoengine.wtf import model_form
 import os
 
@@ -65,19 +65,8 @@ class Admin(MethodView):
             obj.save()
 
             return redirect(url_for(self.basename + '.detail',
-                identifier=context.get('create')))
+                identifier=obj[self.pk]))
         return render_template(os.path.join(self.basename, self.template),
             **context)
 
-
-def prepare_blueprint(model, basename):
-    bp = Blueprint(basename, __name__, template_folder='templates')
-    basepath = '/{}/' % basename
-    bp.add_url_rule(basepath, view_func=List.as_view('list'))
-    bp.add_url_rule(basepath + '<identifier>/', view_func=Detail.as_view('detail'))
-    bp.add_url_rule(basepath + 'create/', defaults={'identifier': None},
-        view_func=Admin.as_view('create'))
-    bp.add_url_rule(basepath + 'edit/<identifier>/',
-        view_func=Admin.as_view('edit'))
-    return bp
 
