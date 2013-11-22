@@ -26,6 +26,13 @@ def register_blueprints(app):
 
 register_blueprints(app)
 
+@app.route("/site-map")
+def site_map():
+    for rule in app.url_map.iter_rules():
+        # Filter out rules we can't navigate to in a browser
+        # and rules that require parameters
+        print rule
+
 if __name__ == '__main__':
     app.debug = debug
     app.run()

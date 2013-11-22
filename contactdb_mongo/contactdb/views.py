@@ -16,7 +16,41 @@ def prepare_blueprint(basename, vList, vDetail, vAdmin):
         view_func=vAdmin.as_view('edit'))
     return bp
 
+# ------------------------------ Persons ------------------------------
 
+
+class PersonsList(List):
+
+    def __init__(self):
+        super(PersonsList, self).__init__()
+        self.model = Person
+        self.basename = 'persons'
+
+
+class PersonsDetail(Detail):
+
+    def __init__(self):
+        super(PersonsDetail, self).__init__()
+        self.model = Person
+        self.basename = 'persons'
+        self.elemname = 'person'
+        self.pk = 'username'
+
+
+class PersonsAdmin(Admin):
+
+    def __init__(self):
+        super(PersonsAdmin, self).__init__()
+        self.model = Person
+        self.basename = 'persons'
+        self.pk = 'username'
+
+# Register the urls
+persons = prepare_blueprint('persons', PersonsList, PersonsDetail, PersonsAdmin)
+# ---------------------------------------------------------------------
+
+
+# -------------------------------- Orgs -------------------------------
 class OrgsList(List):
 
     def __init__(self):
@@ -43,53 +77,48 @@ class OrgsAdmin(Admin):
 
 # Register the urls
 orgs = prepare_blueprint('orgs', OrgsList, OrgsDetail, OrgsAdmin)
+# ---------------------------------------------------------------------
 
-class PGPKeysList(MethodView):
+# ------------------------------ PGPKeys ------------------------------
+class PGPKeysList(List):
 
-    def get(self):
-        pgpkeys = PGPKey.objects.all()
-        return render_template('pgpkeys/list.html', pgpkeys=pgpkeys, view = 'pgpkeys')
+    def __init__(self):
+        super(PGPKeysList, self).__init__()
+        self.model = PGPKey
+        self.basename = 'pgpkeys'
 
+class PGPKeysDetail(Detail):
 
-class PGPKeysDetail(MethodView):
+    def __init__(self):
+        super(PGPKeysDetail, self).__init__()
+        self.model = PGPKey
+        self.basename = 'pgpkeys'
+        self.elemname = 'pgpkey'
+        self.pk = 'keyid'
 
-    def get(self, keyid):
-        pgpkey = PGPKey.objects.get_or_404(keyid=keyid)
-        return render_template('pgpkeys/detail.html', pgpkey=pgpkey, view = 'pgpkeys')
+class PGPKeysAdmin(Admin):
 
-# Register the urls
-pgpkeys = Blueprint('pgpkeys', __name__, template_folder='templates')
-pgpkeys.add_url_rule('/pgpkeys/', view_func=PGPKeysList.as_view('list'))
-pgpkeys.add_url_rule('/pgpkeys/<keyid>/', view_func=PGPKeysDetail.as_view('detail'))
-
-
-class PersonsList(MethodView):
-
-    def get(self):
-        persons = Person.objects.all()
-        return render_template('persons/list.html', persons=persons, view = 'persons')
-
-
-class PersonsDetail(MethodView):
-
-    def get(self, username):
-        person = Person.objects.get_or_404(username=username)
-        return render_template('persons/detail.html', person=person, view = 'persons')
+    def __init__(self):
+        super(PGPKeysAdmin, self).__init__()
+        self.model = PGPKey
+        self.basename = 'pgpkeys'
+        self.pk = 'keyid'
 
 # Register the urls
-persons = Blueprint('persons', __name__, template_folder='templates')
-persons.add_url_rule('/persons/', view_func=PersonsList.as_view('list'))
-persons.add_url_rule('/persons/<username>/', view_func=PersonsDetail.as_view('detail'))
+pgpkeys = prepare_blueprint('pgpkeys', PGPKeysList, PGPKeysDetail, PGPKeysAdmin)
+
+# ---------------------------------------------------------------------
 
 
-class IMList(MethodView):
+# --------------------------------- IM --------------------------------
+class IMsList(List):
 
     def get(self):
         ims = InstantMessaging.objects.all()
         return render_template('ims/list.html', ims=ims, view = 'ims')
 
 
-class IMDetail(MethodView):
+class IMsDetail(Detail):
 
     def get(self, handle):
         im = InstantMessaging.objects.get_or_404(handle=handle)
@@ -99,3 +128,4 @@ class IMDetail(MethodView):
 ims = Blueprint('ims', __name__, template_folder='templates')
 ims.add_url_rule('/ims/', view_func=IMList.as_view('list'))
 ims.add_url_rule('/ims/<handle>/', view_func=IMDetail.as_view('detail'))
+# ---------------------------------------------------------------------

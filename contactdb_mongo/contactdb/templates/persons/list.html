@@ -11,14 +11,14 @@
     </thead>
     {% for person in persons %}
       <tr>
-        <td><a href="{{ url_for('persons.detail', username=person.username) }}">
+        <td><a href="{{ url_for('persons.detail', identifier=person.username) }}">
             {{ person.username }}</a></td>
         <td>
         {% for email in  person.emails %}
             {{ email }}
             {% if email in person.pgpkey.emails %}
               -
-              <a href="{{ url_for('pgpkeys.detail', keyid=person.pgpkey.keyid) }}">
+              <a href="{{ url_for('pgpkeys.detail', identifier=person.pgpkey.keyid) }}">
                 PGP Key
               </a>
             {% endif %}
@@ -30,7 +30,7 @@
             {{ im.handle }}
             {% if im.otr %}
                 -
-                <a href="{{ url_for('ims.detail', handle=im.handle) }}">
+                <a href="{{ url_for('ims.detail', identifier=im.handle) }}">
                   OTR Fingerprint
                 </a>
             {% endif %}

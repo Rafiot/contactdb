@@ -18,7 +18,7 @@
     <li>{{ email }}
     {% if email in person.pgpkey.emails %}
       -
-      <a href="{{ url_for('pgpkeys.detail', keyid=person.pgpkey.keyid) }}">
+      <a href="{{ url_for('pgpkeys.detail', identifier=person.pgpkey.keyid) }}">
         PGP Key
       </a>
     {% endif %}
@@ -31,7 +31,7 @@
     <li>{{ im.handle }}
     {% if im.otr %}
         -
-        <a href="{{ url_for('ims.detail', handle=im.handle) }}">
+        <a href="{{ url_for('ims.detail', identifier=im.handle) }}">
           OTR Fingerprint
         </a>
     {% endif %}

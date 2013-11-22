@@ -12,7 +12,7 @@
   <ul>
   {% for member in org.members %}
     <li>
-    <a href="{{ url_for('persons.detail', username=member.username) }}">
+    <a href="{{ url_for('persons.detail', identifier=member.username) }}">
         {{member.username}}
     </a>
     {% if member.firstname or member.lastname %}
@@ -20,7 +20,7 @@
     {% endif %}
 
     {% if member.pgpkey %}
-      - <a href="{{ url_for('pgpkeys.detail', keyid=member.pgpkey.keyid) }}">
+      - <a href="{{ url_for('pgpkeys.detail', identifier=member.pgpkey.keyid) }}">
           {{ member.pgpkey.uids[0] }}
       </a>
     {% elif member.emails %}
