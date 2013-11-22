@@ -113,19 +113,28 @@ pgpkeys = prepare_blueprint('pgpkeys', PGPKeysList, PGPKeysDetail, PGPKeysAdmin)
 # --------------------------------- IM --------------------------------
 class IMsList(List):
 
-    def get(self):
-        ims = InstantMessaging.objects.all()
-        return render_template('ims/list.html', ims=ims, view = 'ims')
-
+    def __init__(self):
+        super(IMsList, self).__init__()
+        self.model = InstantMessaging
+        self.basename = 'ims'
 
 class IMsDetail(Detail):
 
-    def get(self, handle):
-        im = InstantMessaging.objects.get_or_404(handle=handle)
-        return render_template('ims/detail.html', im=im, view = 'ims')
+    def __init__(self):
+        super(IMsDetail, self).__init__()
+        self.model = InstantMessaging
+        self.basename = 'ims'
+        self.elemname = 'im'
+        self.pk = 'handle'
+
+class IMsAdmin(Admin):
+
+    def __init__(self):
+        super(IMsAdmin, self).__init__()
+        self.model = InstantMessaging
+        self.basename = 'ims'
+        self.pk = 'im'
 
 # Register the urls
-ims = Blueprint('ims', __name__, template_folder='templates')
-ims.add_url_rule('/ims/', view_func=IMList.as_view('list'))
-ims.add_url_rule('/ims/<handle>/', view_func=IMDetail.as_view('detail'))
+ims = prepare_blueprint('ims', IMsList, IMsDetail, IMsAdmin)
 # ---------------------------------------------------------------------
