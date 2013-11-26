@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask.ext.mongoengine import MongoEngine
 import gnupg
 
@@ -32,6 +32,10 @@ def site_map():
         # Filter out rules we can't navigate to in a browser
         # and rules that require parameters
         print rule
+
+@app.route("/")
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.debug = debug

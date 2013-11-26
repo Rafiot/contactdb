@@ -1,5 +1,4 @@
-from flask import Blueprint, render_template
-from flask.views import MethodView
+from flask import Blueprint
 
 from contactdb.models import Person, PGPKey, InstantMessaging, Organisation
 
@@ -133,7 +132,7 @@ class IMsAdmin(Admin):
         super(IMsAdmin, self).__init__()
         self.model = InstantMessaging
         self.basename = 'ims'
-        self.pk = 'im'
+        self.pk = 'handle'
 
 # Register the urls
 ims = prepare_blueprint('ims', IMsList, IMsDetail, IMsAdmin)

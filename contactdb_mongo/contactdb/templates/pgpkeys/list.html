@@ -4,28 +4,22 @@
     <table class="table table-hover">
     <thead>
         <tr>
-            <th>Organisation name</th>
-            <th>Email</th>
-            <th>Is a CERT</th>
+            <th>Key ID</th>
+            <th>UIDs</th>
         </tr>
     </thead>
-    {% for org in orgs %}
+    {% for pgpkey in pgpkeys %}
       <tr>
-          <td><a href="{{ url_for('orgs.detail', slug=org.slug) }}">
-                  {{ org.name }}
+          <td><a href="{{ url_for('pgpkeys.detail', identifier=pgpkey.keyid) }}">
+                  {{ pgpkey.keyid }}
           </a></td>
-          {% if org.pgp_key is not None %}
-            <td><a href="{{ url_for('pgpkey.detail', slug=pgpkey.keyid) }}">
-                    {{ org.email }}
-            </a></td>
-          {% else %}
-            <td>{{ org.email }} </td>
+          <td>
+          {% if pgpkey.uids %}
+            {% for uid in pgpkey.uids %}
+                {{ uid }}
+            {% endfor %}
           {% endif %}
-          {% if org.iscert %}
-            <td>✔</td>
-          {% else %}
-            <td>✘</td>
-          {% endif %}
+          </td>
       </tr>
     {% endfor %}
     </table>
