@@ -4,6 +4,7 @@ from contactdb.models import Person, PGPKey, InstantMessaging, Organisation
 
 from views_abstract import List, Detail, Admin
 
+
 def prepare_blueprint(basename, vList, vDetail, vAdmin):
     bp = Blueprint(basename, __name__, template_folder='templates')
     basepath = '/{}/'.format(basename)

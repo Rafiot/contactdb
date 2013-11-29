@@ -89,6 +89,7 @@ person = Person(
         timezone = 'CET'
         )
 
+person.set_password('testing')
 person.save()
 o.members.append(person)
 

@@ -3,15 +3,38 @@
 import datetime
 import re
 
+from werkzeug.security import generate_password_hash, \
+             check_password_hash
+
 from mongoengine import ValidationError
 from contactdb import db
 from contactdb import gpg
 
 class User(db.Document):
     username = db.StringField(required=True, primary_key=True)
-    #password = db.StringField()
+    password = db.StringField()
 
     meta = {'allow_inheritance': True}
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        if self.password is None:
+            return False
+        return check_password_hash(self.password, password)
+
+    def is_authenticated(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def is_active(self):
+        return self.password is not None
+
+    def get_id(self):
+        return self.username
 
     def __unicode__(self):
         return self.username
