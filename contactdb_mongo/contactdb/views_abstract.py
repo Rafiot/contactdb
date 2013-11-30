@@ -63,7 +63,7 @@ class Admin(MethodView):
         context = self.get_context(identifier)
         form = context.get('form')
 
-        if self.is_owner(form) and form.validate():
+        if context['create'] or self.is_owner(form) and form.validate():
             obj = context.get('obj')
             form.populate_obj(obj)
             obj.save()
