@@ -55,11 +55,15 @@ class Admin(MethodView):
         return render_template(os.path.join(self.basename, self.template),
             **context)
 
+    def is_owner(self, form):
+        # forbid editing by default. Has to be overwritten in the subclass
+        return False
+
     def post(self, identifier):
         context = self.get_context(identifier)
         form = context.get('form')
 
-        if form.validate():
+        if self.is_owner(form) and form.validate():
             obj = context.get('obj')
             form.populate_obj(obj)
             obj.save()

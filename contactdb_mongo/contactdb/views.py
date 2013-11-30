@@ -1,19 +1,22 @@
 from flask import Blueprint
 
+from flask.ext.login import login_required, current_user
+
 from contactdb.models import Person, PGPKey, InstantMessaging, Organisation
 
 from views_abstract import List, Detail, Admin
 
-
 def prepare_blueprint(basename, vList, vDetail, vAdmin):
     bp = Blueprint(basename, __name__, template_folder='templates')
     basepath = '/{}/'.format(basename)
-    bp.add_url_rule(basepath, view_func=vList.as_view('list'))
-    bp.add_url_rule(basepath + '<identifier>/', view_func=vDetail.as_view('detail'))
+    bp.add_url_rule(basepath,
+            view_func=login_required(vList.as_view('list')))
+    bp.add_url_rule(basepath + '<identifier>/',
+            view_func=login_required(vDetail.as_view('detail')))
     bp.add_url_rule(basepath + 'create/', defaults={'identifier': None},
-        view_func=vAdmin.as_view('create'))
+        view_func=login_required(vAdmin.as_view('create')))
     bp.add_url_rule(basepath + 'edit/<identifier>/',
-        view_func=vAdmin.as_view('edit'))
+        view_func=login_required(vAdmin.as_view('edit')))
     return bp
 
 # ------------------------------ Persons ------------------------------
@@ -45,6 +48,12 @@ class PersonsAdmin(Admin):
         self.basename = 'persons'
         self.pk = 'username'
 
+    def is_owner(self, form):
+        if current_user.username == form.username.data:
+            return True
+        return False
+
+
 # Register the urls
 persons = prepare_blueprint('persons', PersonsList, PersonsDetail, PersonsAdmin)
 # ---------------------------------------------------------------------
@@ -75,6 +84,14 @@ class OrgsAdmin(Admin):
         self.basename = 'orgs'
         self.pk = 'name'
 
+    def is_owner(self, form):
+        if current_user.organisation is not None:
+            for o in current_user.organisation:
+                if o.name == form.name.data:
+                    return True
+        return False
+
+
 # Register the urls
 orgs = prepare_blueprint('orgs', OrgsList, OrgsDetail, OrgsAdmin)
 # ---------------------------------------------------------------------
@@ -103,6 +120,7 @@ class PGPKeysAdmin(Admin):
         self.model = PGPKey
         self.basename = 'pgpkeys'
         self.pk = 'keyid'
+
 
 # Register the urls
 pgpkeys = prepare_blueprint('pgpkeys', PGPKeysList, PGPKeysDetail, PGPKeysAdmin)
@@ -134,6 +152,13 @@ class IMsAdmin(Admin):
         self.model = InstantMessaging
         self.basename = 'ims'
         self.pk = 'handle'
+
+    def is_owner(self, form):
+        if current_user.im is not None:
+            for im in current_user.im:
+                if im.handle == form.handle.data:
+                    return True
+        return False
 
 # Register the urls
 ims = prepare_blueprint('ims', IMsList, IMsDetail, IMsAdmin)

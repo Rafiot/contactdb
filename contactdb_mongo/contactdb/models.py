@@ -41,7 +41,7 @@ class User(db.Document):
 
 
 class PGPKey(db.Document):
-    keyid  = db.StringField(max_length=1000, required=True)
+    keyid  = db.StringField(max_length=1000, primary_key=True)
     fingerprint = db.StringField(max_length=1000, required = True)
     uids = db.ListField(db.StringField(verbose_name="Email (UID)",
         max_length=1000), required = True)
@@ -71,7 +71,7 @@ class PGPKey(db.Document):
 
 
 class InstantMessaging(db.Document):
-    handle = db.StringField(max_length=256, required = True, primary_key=True)
+    handle = db.StringField(max_length=256, primary_key=True)
     otr = db.ListField(db.StringField(verbose_name="OTR Fingerprint",
         max_length=50, default=list))
 
@@ -116,7 +116,7 @@ class Person(User):
 
 
 class Organisation(db.Document):
-    name = db.StringField(max_length=100, required = True)
+    name = db.StringField(max_length=100, primary_key=True)
     fullname = db.StringField(max_length=1000)
     org_path = db.StringField(max_length=5000) # pocandora
     nesting = db.StringField(max_length=5000) # pocandora
