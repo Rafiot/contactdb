@@ -66,7 +66,7 @@ def login():
                 return render_template('index.html')
 
         flash('Wrong username or password!', 'error')
-    form_cls = model_form(User)
+    form_cls = model_form(User, field_args={'password' : {'password': True}})
     form = form_cls(request.form)
     context = {
         "obj": User,
