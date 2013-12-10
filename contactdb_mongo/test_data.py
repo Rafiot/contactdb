@@ -75,6 +75,7 @@ im.save()
 
 person = Person(
         username = 'raphael',
+        password = 'testing',
         firstname = 'Raphael',
         lastname = 'Vinot',
         organisation = [o],
@@ -87,8 +88,24 @@ person = Person(
         timezone = 'CET'
         )
 
-person.set_password('testing')
 person.save()
 o.members.append(person)
 
 o.save()
+
+
+person = Person(
+        username = 'raphael2',
+        password = 'testing',
+        firstname = 'Raphael',
+        lastname = 'Vinot',
+        title = 'Operator',
+        phone = '(+352) 247 88444',
+        emails = ['RAPHAEL@tata.lu', 'info@circl.lu'],
+        pgpkey = pgpkey,
+        im = [im],
+        website = 'http://circl.lu/',
+        timezone = 'CET'
+        )
+
+person.save()

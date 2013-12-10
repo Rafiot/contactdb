@@ -47,14 +47,18 @@ class Admin(MethodView):
             "obj": obj,
             "form": form,
             "view": self.basename,
+            "is_owner": self.is_owner(form),
             "create": identifier is None
         }
         return context
 
     def get(self, identifier):
         context = self.get_context(identifier)
-        return render_template(os.path.join(self.basename, self.template),
-            **context)
+        if context['create'] or context['is_owner']:
+            return render_template(os.path.join(self.basename, self.template),
+                **context)
+        return redirect(url_for(self.basename + '.detail',
+            identifier=context['obj'][self.pk]))
 
     def is_owner(self, form):
         # forbid editing by default. Has to be overwritten in the subclass
@@ -64,7 +68,7 @@ class Admin(MethodView):
         context = self.get_context(identifier)
         form = context.get('form')
 
-        if context['create'] or self.is_owner(form) and form.validate():
+        if context['create'] or context['is_owner'] and form.validate():
             obj = context.get('obj')
             form.populate_obj(obj)
             obj.save()

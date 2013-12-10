@@ -41,7 +41,7 @@ class User(db.Document):
 
 
 class PGPKey(db.Document):
-    keyid  = db.StringField(max_length=256, unique=True)
+    keyid  = db.StringField(max_length=256, primary_key=True)
     fingerprint = db.StringField(max_length=256, required = True)
     uids = db.ListField(db.StringField(verbose_name="Email (UID)",
         max_length=512), required = True)
