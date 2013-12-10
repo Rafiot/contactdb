@@ -30,7 +30,8 @@ class Admin(MethodView):
         self.template = 'edit.html'
 
     def get_context(self, identifier=None):
-        form_cls = model_form(self.model)
+        form_cls = model_form(self.model,
+                field_args={'password' : {'password': True}})
 
         if identifier is not None :
             obj = self.model.objects.get_or_404(**{self.pk: identifier})

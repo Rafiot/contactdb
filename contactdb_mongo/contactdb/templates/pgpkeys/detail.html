@@ -4,6 +4,11 @@
   <div class="page-header">
     <h1>{{ pgpkey.keyid }}</h1>
   </div>
+  <p align="right">
+    <a href="{{ url_for('pgpkeys.edit', identifier=pgpkey.keyid) }}"
+        class="btn btn-primary btn-large">Edit
+    </a>
+  </p>
 {% endblock %}
 
 {% block content %}

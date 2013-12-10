@@ -4,6 +4,11 @@
   <div class="page-header">
     <h1>{{ org.name }}</h1>
   </div>
+  <p align="right">
+    <a href="{{ url_for('orgs.edit', identifier=org.name) }}"
+        class="btn btn-primary btn-large">Edit
+    </a>
+  </p>
 {% endblock %}
 
 {% block content %}

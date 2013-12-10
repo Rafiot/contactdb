@@ -9,6 +9,11 @@
           {% endif%}
       </h1>
   </div>
+  <p align="right">
+    <a href="{{ url_for('persons.edit', identifier=person.username) }}"
+        class="btn btn-primary btn-large">Edit
+    </a>
+  </p>
 {% endblock %}
 
 {% block content %}

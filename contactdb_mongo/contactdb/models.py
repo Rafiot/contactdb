@@ -11,8 +11,8 @@ from contactdb import db
 from contactdb import gpg
 
 class User(db.Document):
-    username = db.StringField(required=True, primary_key=True)
-    password = db.StringField()
+    username = db.StringField(max_length=64, primary_key=True)
+    password = db.StringField(max_length=128)
 
     meta = {'allow_inheritance': True}
 
@@ -41,13 +41,14 @@ class User(db.Document):
 
 
 class PGPKey(db.Document):
-    keyid  = db.StringField(max_length=1000, primary_key=True)
-    fingerprint = db.StringField(max_length=1000, required = True)
+    keyid  = db.StringField(max_length=256, unique=True)
+    fingerprint = db.StringField(max_length=256, required = True)
     uids = db.ListField(db.StringField(verbose_name="Email (UID)",
-        max_length=1000), required = True)
-    emails = db.ListField(db.StringField(max_length=1000))
+        max_length=512), required = True)
+    emails = db.ListField(db.StringField(max_length=256))
     key = db.StringField(required = True)
-    created = db.DateTimeField(verbose_name="Created", required = True)
+    created = db.DateTimeField(verbose_name="Created",
+            required = True)
     expires = db.DateTimeField(verbose_name="Expires")
 
     def add_key(self, ascii_key):
@@ -73,28 +74,23 @@ class PGPKey(db.Document):
 class InstantMessaging(db.Document):
     handle = db.StringField(max_length=256, primary_key=True)
     otr = db.ListField(db.StringField(verbose_name="OTR Fingerprint",
-        max_length=50, default=list))
+        max_length=64, default=list))
 
     def __unicode__(self):
         return self.handle
 
-#class CountryCode(db.Document):
-#    cc = db.StringField(max_length=2)
-#    cc3 = db.StringField(max_length=3)
-#    country_name = db.StringField(max_length=300)
-
-#class Source(db.Document):
-#    name = db.StringField(max_length=1000)
-#    reliability = FloatField() # between 0 and 1 , with 1 being super reliable
+class CountryCode(db.Document):
+    cc = db.StringField(max_length=4, primary_key=True)
+    country_name = db.StringField(max_length=128, required=True)
 
 class Person(User):
-    firstname = db.StringField(max_length=100)
-    lastname = db.StringField(max_length=100)
+    firstname = db.StringField(max_length=128)
+    lastname = db.StringField(max_length=128)
     # http://stackoverflow.com/questions/3885487/implementing-bi-directional-relationships-in-mongoengine
     organisation = db.ListField(db.ReferenceField('Organisation'),
             default=list)
-    orgPocType = db.StringField(max_length=30)
-    title = db.StringField(max_length=100)
+    orgPocType = db.StringField(max_length=32)
+    title = db.StringField(max_length=128)
     pic = db.ImageField(collection_name='profile_pic')
     phone = db.StringField(max_length=128)
     emergency_phone = db.StringField(max_length=128)
@@ -102,12 +98,14 @@ class Person(User):
     emails = db.ListField(db.EmailField(max_length=256), default=list)
     pgpkey = db.ReferenceField(PGPKey)
     im = db.ListField(db.ReferenceField(InstantMessaging), default=list)
-    website = db.URLField(verbose_name="Website URL", max_length=1000)
-    timezone = db.StringField(max_length=10)
+    website = db.URLField(verbose_name="Website URL", max_length=512)
+    timezone = db.StringField(max_length=8)
     remarks = db.StringField()
     last_logged_in = db.DateTimeField()
 
     def clean(self):
+        if self.password is not None:
+            self.set_password(self.password)
         if self.pgpkey is not None:
             for email in self.emails:
                 if email in self.pgpkey.emails:
@@ -116,38 +114,27 @@ class Person(User):
 
 
 class Organisation(db.Document):
-    name = db.StringField(max_length=100, primary_key=True)
-    fullname = db.StringField(max_length=1000)
-    org_path = db.StringField(max_length=5000) # pocandora
-    nesting = db.StringField(max_length=5000) # pocandora
-    protection_profile = db.StringField(max_length=30)
+    name = db.StringField(max_length=32, primary_key=True)
+    fullname = db.StringField(max_length=1024)
     iscert = db.BooleanField(verbose_name="Is a CERT")
 
-    address = db.StringField(max_length=1000)
+    address = db.StringField()
 
-#    country = db.ListField(db.ReferenceField(CountryCode))
+    country = db.ListField(db.ReferenceField(CountryCode))
     phone = db.StringField(max_length=128)
     emergency_phone = db.StringField(max_length=128)
     fax = db.StringField(max_length=128)
-    other_communication = db.StringField(max_length=1000)
+    other_communication = db.StringField(max_length=1024)
     email = db.EmailField(max_length=256, required = True)
-    website = db.URLField(max_length=1000, verbose_name="Website URL")
-    timezone = db.StringField(max_length=10)   # XXX FIXME: later have a real time zone field
-    business_hh_start = db.DateTimeField(verbose_name="Business hours start")
-    business_hh_end = db.DateTimeField(verbose_name="Business hours end")
+    website = db.URLField(max_length=1024, verbose_name="Website URL")
+    timezone = db.StringField(max_length=8)
     date_established = db.DateTimeField(verbose_name="Date established")
     pgpkey = db.ReferenceField(PGPKey)
     members = db.ListField(db.ReferenceField(Person), default=list)
 
     confirmed = db.BooleanField(verbose_name="Confirmed to exist")
     active = db.BooleanField(verbose_name="Still active")
-#    source = db.ReferenceField(Source)
 
-
-    ti_url = db.URLField(max_length=1000, verbose_name="TI URL")  # link to the TI DB
-    first_url = db.URLField(max_length=1000, verbose_name="FIRST.org URL")  # link to the  DB
-
-    # meta
     created_at = db.DateTimeField("Created")
     last_updated = db.DateTimeField("Last updated")
 
