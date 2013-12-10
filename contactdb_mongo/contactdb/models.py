@@ -83,6 +83,10 @@ class CountryCode(db.Document):
     cc = db.StringField(max_length=4, primary_key=True)
     country_name = db.StringField(max_length=128, required=True)
 
+    def __unicode__(self):
+        return self.cc
+
+
 class Person(User):
     firstname = db.StringField(max_length=128)
     lastname = db.StringField(max_length=128)
