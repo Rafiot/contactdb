@@ -1,13 +1,30 @@
 from flask.views import MethodView
+from flask.ext.login import login_required
+from flask import Blueprint
 from flask import render_template, request, redirect, url_for
 from flask.ext.mongoengine.wtf import model_form
 import os
 
+def prepare_blueprint(basename, vList, vDetail, vAdmin):
+    bp = Blueprint(basename, __name__, template_folder='templates')
+    basepath = '/{}/'.format(basename)
+    bp.add_url_rule(basepath,
+            view_func=login_required(vList.as_view('list')))
+    bp.add_url_rule(basepath + '<identifier>/',
+            view_func=login_required(vDetail.as_view('detail')))
+    bp.add_url_rule(basepath + 'create/', defaults={'identifier': None},
+        view_func=login_required(vAdmin.as_view('create')))
+    bp.add_url_rule(basepath + 'edit/<identifier>/',
+        view_func=login_required(vAdmin.as_view('edit')))
+    return bp
+
 
 class List(MethodView):
 
-    def __init__(self):
+    def __init__(self, model, basename):
         self.template = 'list.html'
+        self.model = model
+        self.basename = basename
 
     def get(self):
         objs = self.model.objects.all()
@@ -16,8 +33,12 @@ class List(MethodView):
 
 class Detail(MethodView):
 
-    def __init__(self):
+    def __init__(self, model, basename, elemname, pk):
         self.template = 'detail.html'
+        self.model = model
+        self.basename = basename
+        self.elemname = elemname
+        self.pk = pk
 
     def get(self, identifier):
         obj = self.model.objects.get_or_404(**{self.pk: identifier})
@@ -26,8 +47,11 @@ class Detail(MethodView):
 
 class Admin(MethodView):
 
-    def __init__(self):
+    def __init__(self, model, basename, pk):
         self.template = 'edit.html'
+        self.model = model
+        self.basename = basename
+        self.pk = pk
 
     def get_context(self, identifier=None):
         form_cls = model_form(self.model,

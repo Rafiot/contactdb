@@ -23,7 +23,7 @@
     <li>{{ email }}
     {% if email in person.pgpkey.emails %}
       -
-      <a href="{{ url_for('pgpkeys.detail', identifier=person.pgpkey.keyid) }}">
+      <a href="{{ url_for('pgpkeys.detail', identifier=person.pgpkey.id) }}">
         PGP Key
       </a>
     {% endif %}

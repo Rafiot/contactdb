@@ -17,7 +17,7 @@
           <td> {{ org.email }}
               {% if org.email in org.pgpkey.emails %}
                 -
-                <a href="{{ url_for('pgpkeys.detail', identifier=org.pgpkey.keyid) }}">
+                <a href="{{ url_for('pgpkeys.detail', identifier=org.pgpkey.id) }}">
                     PGP Key
                 </a>
               {% endif %}

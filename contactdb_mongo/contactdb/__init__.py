@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, \
-    flash
+from flask import Flask, render_template, request, flash
 from flask.ext.login import LoginManager, login_user, logout_user, \
     current_user, login_required
 from flask.ext.mongoengine import MongoEngine
@@ -25,13 +24,10 @@ from contactdb.models import User
 
 def register_blueprints(app):
     # Prevents circular imports
-    from contactdb.views import orgs
+    from contactdb.views import orgs, pgpkeys, persons, ims
     app.register_blueprint(orgs)
-    from contactdb.views import pgpkeys
     app.register_blueprint(pgpkeys)
-    from contactdb.views import persons
     app.register_blueprint(persons)
-    from contactdb.views import ims
     app.register_blueprint(ims)
 
 register_blueprints(app)
@@ -55,7 +51,7 @@ def load_user(userid):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated():
-        return render_template('index.html')
+        return index()
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -63,7 +59,7 @@ def login():
         if user is not None and user.check_password(password):
             if login_user(user):
                 flash('Logged in successfully!', 'success')
-                return render_template('index.html')
+                return index()
 
         flash('Wrong username or password!', 'error')
     form_cls = model_form(User, field_args={'password' : {'password': True}})
@@ -80,7 +76,7 @@ def login():
 def logout():
     logout_user()
     flash('You have logged out!')
-    return render_template('index.html')
+    return index()
 
 if __name__ == '__main__':
     app.debug = debug

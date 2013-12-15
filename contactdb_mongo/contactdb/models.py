@@ -41,7 +41,7 @@ class User(db.Document):
 
 
 class PGPKey(db.Document):
-    keyid  = db.StringField(max_length=256, primary_key=True)
+    id = db.StringField(max_length=256, primary_key=True)
     fingerprint = db.StringField(max_length=256, required = True)
     uids = db.ListField(db.StringField(verbose_name="Email (UID)",
         max_length=512), required = True)
@@ -57,7 +57,7 @@ class PGPKey(db.Document):
         self.fingerprint = r.results[0]['fingerprint']
         for key in gpg.list_keys():
             if key['fingerprint'] == self.fingerprint:
-                self.keyid = key['keyid']
+                self.id = key['keyid']
                 self.created = datetime.datetime.fromtimestamp(int(key['date']))
                 if len(key['expires']) > 0:
                     self.expires = datetime.datetime.fromtimestamp(int(key['expires']))
@@ -68,7 +68,7 @@ class PGPKey(db.Document):
                 self.emails.append(email[0])
 
     def __unicode__(self):
-        return self.keyid
+        return self.id
 
 
 class InstantMessaging(db.Document):
