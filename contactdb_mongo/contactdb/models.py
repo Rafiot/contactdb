@@ -41,7 +41,7 @@ class User(db.Document):
 
 
 class PGPKey(db.Document):
-    id = db.StringField(max_length=256, primary_key=True)
+    keyid = db.StringField(max_length=256, unique=True)
     fingerprint = db.StringField(max_length=256, required = True)
     uids = db.ListField(db.StringField(verbose_name="Email (UID)",
         max_length=512), required = True)
@@ -52,20 +52,23 @@ class PGPKey(db.Document):
     expires = db.DateTimeField(verbose_name="Expires")
 
     def add_key(self, ascii_key):
-        r = gpg.import_keys(ascii_key)
+        r = gpg.import_keys(ascii_key.strip())
         self.key = ascii_key
         self.fingerprint = r.results[0]['fingerprint']
         for key in gpg.list_keys():
             if key['fingerprint'] == self.fingerprint:
-                self.id = key['keyid']
+                self.keyid = key['keyid']
                 self.created = datetime.datetime.fromtimestamp(int(key['date']))
                 if len(key['expires']) > 0:
                     self.expires = datetime.datetime.fromtimestamp(int(key['expires']))
                 self.uids = key['uids']
+        self.emails = []
         for uid in self.uids:
             email = re.findall(".*<(.*)>.*", uid)
             if len(email) > 0:
                 self.emails.append(email[0])
+
+
 
     def __unicode__(self):
         return self.id

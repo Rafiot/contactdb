@@ -10,8 +10,8 @@
     </thead>
     {% for pgpkey in pgpkeys %}
       <tr>
-          <td><a href="{{ url_for('pgpkeys.detail', identifier=pgpkey.id) }}">
-                  {{ pgpkey.id }}
+          <td><a href="{{ url_for('pgpkeys.detail', identifier=pgpkey.keyid) }}">
+                  {{ pgpkey.keyid }}
           </a></td>
           <td>
           {% if pgpkey.uids %}

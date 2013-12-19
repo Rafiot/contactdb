@@ -46,6 +46,8 @@ rvQUK/Y=
 -----END PGP PUBLIC KEY BLOCK-----
 """
 
+
+
 pgpkey = PGPKey()
 pgpkey.add_key(infokey)
 pgpkey.save()

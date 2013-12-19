@@ -2,13 +2,15 @@
 
 {% block page_header %}
   <div class="page-header">
-    <h1>{{ pgpkey.id }}</h1>
+    <h1>{{ pgpkey.keyid }}</h1>
+    {% if is_owner %}
+    <p align="right">
+        <a href="{{ url_for('pgpkeys.edit', identifier=pgpkey.keyid) }}"
+            class="btn btn-primary btn-large">Change key
+        </a>
+    </p>
+    {% endif %}
   </div>
-  <p align="right">
-    <a href="{{ url_for('pgpkeys.edit', identifier=pgpkey.id) }}"
-        class="btn btn-primary btn-large">Edit
-    </a>
-  </p>
 {% endblock %}
 
 {% block content %}

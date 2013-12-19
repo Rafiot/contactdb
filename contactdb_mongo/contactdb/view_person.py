@@ -7,17 +7,25 @@ model = Person
 pk = 'username'
 elemname = 'person'
 
+def is_owner(current_user, username):
+    print current_user.username, username
+    if current_user.username == username:
+        return True
+    return False
+
 class PersonsList(List):
 
     def __init__(self):
         super(PersonsList, self).__init__(model, basename)
-
 
 class PersonsDetail(Detail):
 
     def __init__(self):
         super(PersonsDetail, self).__init__(model, basename, elemname, pk)
 
+    def is_owner(self, person):
+        print person
+        return is_owner(current_user, person.username)
 
 class PersonsAdmin(Admin):
 
@@ -25,9 +33,7 @@ class PersonsAdmin(Admin):
         super(PersonsAdmin, self).__init__(model, basename, pk)
 
     def is_owner(self, form):
-        if current_user.username == form.username.data:
-            return True
-        return False
+        return is_owner(current_user.username, form.username.data)
 
 def get_blueprint():
     return prepare_blueprint(basename, PersonsList, PersonsDetail, PersonsAdmin)

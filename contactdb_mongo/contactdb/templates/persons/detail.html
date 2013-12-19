@@ -8,12 +8,14 @@
           - {{ person.firstname }} {{person.lastname}}
           {% endif%}
       </h1>
+      {% if is_owner %}
+      <p align="right">
+        <a href="{{ url_for('persons.edit', identifier=person.username) }}"
+            class="btn btn-primary btn-large">Edit
+        </a>
+      </p>
+      {% endif %}
   </div>
-  <p align="right">
-    <a href="{{ url_for('persons.edit', identifier=person.username) }}"
-        class="btn btn-primary btn-large">Edit
-    </a>
-  </p>
 {% endblock %}
 
 {% block content %}
@@ -23,7 +25,7 @@
     <li>{{ email }}
     {% if email in person.pgpkey.emails %}
       -
-      <a href="{{ url_for('pgpkeys.detail', identifier=person.pgpkey.id) }}">
+      <a href="{{ url_for('pgpkeys.detail', identifier=person.pgpkey.keyid) }}">
         PGP Key
       </a>
     {% endif %}

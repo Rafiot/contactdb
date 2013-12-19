@@ -40,10 +40,15 @@ class Detail(MethodView):
         self.elemname = elemname
         self.pk = pk
 
+    def is_owner(self, obj):
+        # do not display edit button by default
+        return False
+
     def get(self, identifier):
         obj = self.model.objects.get_or_404(**{self.pk: identifier})
+        owner = self.is_owner(obj)
         return render_template(os.path.join(self.basename, self.template),
-            view = self.basename, **{self.elemname: obj})
+            view=self.basename, is_owner=owner,**{self.elemname: obj})
 
 class Admin(MethodView):
 
