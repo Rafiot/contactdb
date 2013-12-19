@@ -50,7 +50,6 @@ rvQUK/Y=
 
 pgpkey = PGPKey()
 pgpkey.add_key(infokey)
-pgpkey.save()
 
 # add CIRCL
 o = Organisation(
@@ -67,7 +66,6 @@ o = Organisation(
         confirmed = True,
         active = True)
 
-o.save()
 
 im = InstantMessaging(
         handle = 'RAPHAEL@tata.lu',
@@ -90,6 +88,8 @@ person = Person(
         timezone = 'CET'
         )
 
+pgpkey.person = person
+pgpkey.save()
 person.save()
 o.members.append(person)
 

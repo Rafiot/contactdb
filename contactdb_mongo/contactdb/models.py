@@ -45,6 +45,7 @@ class PGPKey(db.Document):
     fingerprint = db.StringField(max_length=256, required = True)
     uids = db.ListField(db.StringField(verbose_name="Email (UID)",
         max_length=512), required = True)
+    person = db.ReferenceField('Person', required = True)
     emails = db.ListField(db.StringField(max_length=256))
     key = db.StringField(required = True)
     created = db.DateTimeField(verbose_name="Created",
@@ -69,9 +70,15 @@ class PGPKey(db.Document):
                 self.emails.append(email[0])
 
 
+    def clean(self):
+        for email in self.emails:
+            if email in self.person.emails:
+                return True
+        raise ValidationError('No matching email in the UIDs.')
+
 
     def __unicode__(self):
-        return self.id
+        return self.keyid
 
 
 class InstantMessaging(db.Document):

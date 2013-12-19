@@ -33,7 +33,7 @@ class PersonsAdmin(Admin):
         super(PersonsAdmin, self).__init__(model, basename, pk)
 
     def is_owner(self, form):
-        return is_owner(current_user.username, form.username.data)
+        return is_owner(current_user, form.username.data)
 
 def get_blueprint():
     return prepare_blueprint(basename, PersonsList, PersonsDetail, PersonsAdmin)
