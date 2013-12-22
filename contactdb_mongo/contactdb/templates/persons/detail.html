@@ -22,12 +22,14 @@
 <h2>Emails</h2>
 <ul>
 {% for email in  person.emails %}
-    <li>{{ email }}
-    {% if email in person.pgpkey.emails %}
-      -
-      <a href="{{ url_for('pgpkeys.detail', identifier=person.pgpkey.keyid) }}">
-        PGP Key
-      </a>
+    {% if email != 'mail@example.com' %}
+      <li>{{ email }}
+      {% if email in person.pgpkey.emails %}
+        -
+        <a href="{{ url_for('pgpkeys.detail', identifier=person.pgpkey.keyid) }}">
+          PGP Key
+        </a>
+      {% endif %}
     {% endif %}
     </li>
 {% endfor %}

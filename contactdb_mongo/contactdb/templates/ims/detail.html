@@ -17,7 +17,9 @@
   <h2> Fingerprints for this handle: </h2>
   <ul>
   {% for fp in im.otr %}
-    <li><pre>{{ fp }}</pre></li>
+    {% if fp %}
+      <li><pre>{{ fp }}</pre></li>
+    {% endif %}
   {% endfor %}
   </ul>
 {% endblock %}

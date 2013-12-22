@@ -15,6 +15,7 @@
             {{ person.username }}</a></td>
         <td>
         {% for email in  person.emails %}
+          {% if email != "mail@example.com" %}
             {{ email }}
             {% if email in person.pgpkey.emails %}
               -
@@ -23,6 +24,7 @@
               </a>
             {% endif %}
             <br/>
+          {% endif %}
         {% endfor %}
         </td>
         <td>

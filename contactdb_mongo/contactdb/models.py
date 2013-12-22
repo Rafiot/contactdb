@@ -86,6 +86,11 @@ class InstantMessaging(db.Document):
     otr = db.ListField(db.StringField(verbose_name="OTR Fingerprint",
         max_length=64, default=list))
 
+    def clean(self):
+        self.otr = filter(None, self.otr)
+        self.otr += [''] * 5
+        return True
+
     def __unicode__(self):
         return self.handle
 
@@ -118,6 +123,8 @@ class Person(User):
     last_logged_in = db.DateTimeField()
 
     def clean(self):
+        self.emails = [ e for e in self.emails if e is not 'mail@example.com']
+        self.emails += ['mail@example.com'] *2
         if self.password is not None:
             self.set_password(self.password)
         if self.pgpkey is not None:
