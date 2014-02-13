@@ -24,11 +24,12 @@ from contactdb.models import User
 
 def register_blueprints(app):
     # Prevents circular imports
-    from contactdb.views import orgs, pgpkeys, persons, ims
+    from contactdb.views import orgs, pgpkeys, persons, ims, vouchs
     app.register_blueprint(orgs)
     app.register_blueprint(pgpkeys)
     app.register_blueprint(persons)
     app.register_blueprint(ims)
+    app.register_blueprint(vouchs)
 
 register_blueprints(app)
 

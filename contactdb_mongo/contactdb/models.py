@@ -132,7 +132,7 @@ class Person(User):
                 if email in self.pgpkey.emails:
                     return True
             raise ValidationError('PGP Key provided but no corresponding email.')
-
+        return True
 
 class Organisation(db.Document):
     name = db.StringField(max_length=32, primary_key=True)
@@ -164,6 +164,6 @@ class Organisation(db.Document):
 
 class Vouch(db.Document):
     voucher = db.ReferenceField(User, required = True)
-    vouchee = db.ReferenceField(User, required = True)
-    comments = db.StringField(required = True)
+    # {vouchee1: 'comment', vouchee2: comment...}
+    vouchees = db.DictField()
 

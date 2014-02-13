@@ -7,6 +7,7 @@
             <th>Username</th>
             <th>Email</th>
             <th>XMPP</th>
+            <th>Vouch</th>
         </tr>
     </thead>
     {% for person in persons %}
@@ -38,8 +39,15 @@
             {% endif %}
         {% endfor %}
         </td>
+        <td>
+        <a href="{{ url_for('vouchs.edit', identifier=person.username) }}"
+            class="btn btn-primary">
+            Vouch
+        </a>
+        </td>
       </tr>
     {% endfor %}
+
     </table>
     <p align="right">
       <a href="{{ url_for('persons.create') }}" class="btn btn-primary">

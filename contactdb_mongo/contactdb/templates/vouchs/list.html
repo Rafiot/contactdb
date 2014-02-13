@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Voucher</th>
+            <th>Vouchees</th>
+        </tr>
+    </thead>
+    {% for vouch in vouchs %}
+      <tr>
+        <td><a href="{{ url_for('vouchs.detail', identifier=vouch.voucher.username) }}">
+            {{ vouch.voucher.username }}</a></td>
+        <td>
+        {% for vouchee in  vouch.vouchees.keys() %}
+            <a href="{{ url_for('persons.detail', identifier=vouchee) }}">
+                {{ vouchee }}
+            </a>
+            <br/>
+        {% endfor %}
+        </td>
+      </tr>
+    {% endfor %}
+    </table>
+    <p align="right">
+      <a href="{{ url_for('vouchs.create') }}" class="btn btn-primary">
+          Create new
+      </a>
+    </p>
+{% endblock %}

@@ -8,7 +8,6 @@ pk = 'username'
 elemname = 'person'
 
 def is_owner(current_user, username):
-    print current_user.username, username
     if current_user.username == username:
         return True
     return False
@@ -24,7 +23,6 @@ class PersonsDetail(Detail):
         super(PersonsDetail, self).__init__(model, basename, elemname, pk)
 
     def is_owner(self, person):
-        print person
         return is_owner(current_user, person.username)
 
 class PersonsAdmin(Admin):

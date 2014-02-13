@@ -61,15 +61,13 @@ class Admin(MethodView):
     def get_context(self, identifier=None):
         form_cls = model_form(self.model,
                 field_args={'password' : {'password': True}})
-
-        if identifier is not None :
-            obj = self.model.objects.get_or_404(**{self.pk: identifier})
+        obj, created = self.model.objects.get_or_create(**{self.pk: identifier})
+        if not created:
             if request.method == 'POST':
                 form = form_cls(request.form, inital=obj._data)
             else:
                 form = form_cls(obj=obj)
         else:
-            obj = self.model()
             form = form_cls(request.form)
 
         context = {
@@ -77,13 +75,13 @@ class Admin(MethodView):
             "form": form,
             "view": self.basename,
             "is_owner": self.is_owner(form),
-            "create": identifier is None
+            "create": created
         }
         return context
 
     def get(self, identifier):
         context = self.get_context(identifier)
-        if context['create'] or context['is_owner']:
+        if ermntext['create'] or context['is_owner']:
             return render_template(os.path.join(self.basename, self.template),
                 **context)
         return redirect(url_for(self.basename + '.detail',

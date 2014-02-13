@@ -96,7 +96,7 @@ o.members.append(person)
 o.save()
 
 
-person = Person(
+person2 = Person(
         username = 'raphael2',
         password = 'testing',
         firstname = 'Raphael',
@@ -110,4 +110,11 @@ person = Person(
         timezone = 'CET'
         )
 
-person.save()
+person2.save()
+
+vouch = Vouch(
+        voucher = person,
+        vouchees = {person2.username: 'I like this guy.'}
+        )
+
+vouch.save()

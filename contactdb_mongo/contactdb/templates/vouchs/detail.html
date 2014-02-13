@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block page_header %}
+  <div class="page-header">
+      <h1>{{ vouch.voucher.username }}
+          {% if vouch.voucher.firstname or vouch.voucher.lastname %}
+          - {{ vouch.voucher.firstname }} {{ vouch.voucher.lastname }}
+          {% endif%}
+      </h1>
+      {% if is_owner %}
+      <p align="right">
+        <a href="{{ url_for('vouchs.edit', identifier=vouch.voucher.username) }}"
+            class="btn btn-primary btn-large">Edit
+        </a>
+      </p>
+      {% endif %}
+  </div>
+{% endblock %}
+
+{% block content %}
+{% for vouchee, comment in vouch.vouchees.iteritems() %}
+    <h2>
+        <a href="{{ url_for('persons.detail', identifier=vouchee) }}">
+            {{ vouchee }}
+    </a>
+    </h2>
+    <p> {{ comment }}</p>
+{% endfor %}
+
+{% endblock %}
