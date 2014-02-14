@@ -13,9 +13,9 @@
         <td><a href="{{ url_for('vouchs.detail', identifier=vouch.voucher.username) }}">
             {{ vouch.voucher.username }}</a></td>
         <td>
-        {% for vouchee in  vouch.vouchees.keys() %}
-            <a href="{{ url_for('persons.detail', identifier=vouchee) }}">
-                {{ vouchee }}
+        {% for v in  vouch.vouchees %}
+            <a href="{{ url_for('persons.detail', identifier=v.vouchee.username) }}">
+                {{ v.vouchee.username }}
             </a>
             <br/>
         {% endfor %}

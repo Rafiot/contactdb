@@ -19,13 +19,12 @@
 {% endblock %}
 
 {% block content %}
-{% for vouchee, comment in vouch.vouchees.iteritems() %}
+{% for v in vouch.vouchees %}
     <h2>
-        <a href="{{ url_for('persons.detail', identifier=vouchee) }}">
-            {{ vouchee }}
-    </a>
+        <a href="{{ url_for('persons.detail', identifier=v.vouchee.username) }}">
+            {{ v.vouchee.username }}</a>
     </h2>
-    <p> {{ comment }}</p>
+    <p> {{ v.vouch }}</p>
 {% endfor %}
 
 {% endblock %}

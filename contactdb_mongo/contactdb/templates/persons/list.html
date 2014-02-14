@@ -40,10 +40,13 @@
         {% endfor %}
         </td>
         <td>
-        <a href="{{ url_for('vouchs.edit', identifier=person.username) }}"
-            class="btn btn-primary">
-            Vouch
-        </a>
+        {% if current_user.username != person.username %}
+            <a href="{{ url_for('vouchs.edit', identifier=current_user.username,
+                vouchee=person.username) }}"
+                class="btn btn-primary">
+                Vouch
+            </a>
+        {% endif %}
         </td>
       </tr>
     {% endfor %}

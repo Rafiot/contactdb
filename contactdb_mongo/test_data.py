@@ -4,6 +4,19 @@ import datetime
 
 from contactdb.models import *
 
+person = Person(
+        username = 'raphael',
+        password = 'testing',
+        firstname = 'Raphael',
+        lastname = 'Vinot',
+        title = 'Operator',
+        phone = '(+352) 247 88444',
+        emails = ['RAPHAEL@tata.lu', 'info@circl.lu'],
+        website = 'http://circl.lu/',
+        timezone = 'CET'
+        )
+person.save()
+
 infokey = \
 """-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.1.1
@@ -50,6 +63,7 @@ rvQUK/Y=
 
 pgpkey = PGPKey()
 pgpkey.add_key(infokey)
+pgpkey.save()
 
 # add CIRCL
 o = Organisation(
@@ -62,10 +76,9 @@ o = Organisation(
         website = 'http://circl.lu/',
         timezone = 'CET',
         date_established = datetime.datetime(2011, 01, 22),
-        pgpkey = pgpkey,
         confirmed = True,
         active = True)
-
+o.save()
 
 im = InstantMessaging(
         handle = 'RAPHAEL@tata.lu',
@@ -73,26 +86,17 @@ im = InstantMessaging(
         )
 im.save()
 
-person = Person(
-        username = 'raphael',
-        password = 'testing',
-        firstname = 'Raphael',
-        lastname = 'Vinot',
-        organisation = [o],
-        title = 'Operator',
-        phone = '(+352) 247 88444',
-        emails = ['RAPHAEL@tata.lu', 'info@circl.lu'],
-        pgpkey = pgpkey,
-        im = [im],
-        website = 'http://circl.lu/',
-        timezone = 'CET'
-        )
 
 pgpkey.person = person
 pgpkey.save()
-person.save()
-o.members.append(person)
 
+person.pgpkey = pgpkey
+person.organisation.append(o)
+person.im.append(im)
+person.save()
+
+o.members.append(person)
+o.pgpkey = pgpkey
 o.save()
 
 
@@ -114,7 +118,7 @@ person2.save()
 
 vouch = Vouch(
         voucher = person,
-        vouchees = {person2.username: 'I like this guy.'}
+        vouchees = [Vouchee(vouchee = person2, vouch = 'I like this guy.')]
         )
 
 vouch.save()

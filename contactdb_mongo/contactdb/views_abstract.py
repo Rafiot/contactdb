@@ -45,6 +45,7 @@ class Detail(MethodView):
         return False
 
     def get(self, identifier):
+        print self.pk, identifier
         obj = self.model.objects.get_or_404(**{self.pk: identifier})
         owner = self.is_owner(obj)
         return render_template(os.path.join(self.basename, self.template),
@@ -61,14 +62,19 @@ class Admin(MethodView):
     def get_context(self, identifier=None):
         form_cls = model_form(self.model,
                 field_args={'password' : {'password': True}})
-        obj, created = self.model.objects.get_or_create(**{self.pk: identifier})
-        if not created:
-            if request.method == 'POST':
-                form = form_cls(request.form, inital=obj._data)
-            else:
-                form = form_cls(obj=obj)
-        else:
+        if identifier is None:
+            obj = self.model()
             form = form_cls(request.form)
+            created = True
+        else:
+            obj, created = self.model.objects.get_or_create(**{self.pk: identifier})
+            if not created:
+                if request.method == 'POST':
+                    form = form_cls(request.form, inital=obj._data)
+                else:
+                    form = form_cls(obj=obj)
+            else:
+                form = form_cls(request.form)
 
         context = {
             "obj": obj,
@@ -81,7 +87,7 @@ class Admin(MethodView):
 
     def get(self, identifier):
         context = self.get_context(identifier)
-        if ermntext['create'] or context['is_owner']:
+        if context['create'] or context['is_owner']:
             return render_template(os.path.join(self.basename, self.template),
                 **context)
         return redirect(url_for(self.basename + '.detail',

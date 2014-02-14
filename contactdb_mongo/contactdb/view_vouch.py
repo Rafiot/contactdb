@@ -35,15 +35,11 @@ class VouchsAdmin(Admin):
         self.can_change = False
 
     def is_owner(self, form):
-        # FIXME, get proper data
-        self.can_change = is_owner(current_user, form.voucher.data.username)
+        if form.voucher.data is None:
+            self.can_change = True
+        else:
+            self.can_change = is_owner(current_user, form.voucher.data.username)
         return self.can_change
-
-    def post(self, identifier):
-        # TODO
-        return redirect(url_for(self.basename + '.detail',
-                identifier=obj[self.pk]))
-
 
 
 def get_blueprint():

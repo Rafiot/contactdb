@@ -45,7 +45,7 @@ class PGPKey(db.Document):
     fingerprint = db.StringField(max_length=256, required = True)
     uids = db.ListField(db.StringField(verbose_name="Email (UID)",
         max_length=512), required = True)
-    person = db.ReferenceField('Person', required = True)
+    person = db.ReferenceField('Person')
     emails = db.ListField(db.StringField(max_length=256))
     key = db.StringField(required = True)
     created = db.DateTimeField(verbose_name="Created",
@@ -71,10 +71,14 @@ class PGPKey(db.Document):
 
 
     def clean(self):
-        for email in self.emails:
-            if email in self.person.emails:
-                return True
-        raise ValidationError('No matching email in the UIDs.')
+        if self.person is None:
+            return True
+        else:
+            for email in self.emails:
+                if email in self.person.emails:
+                    return True
+            raise ValidationError('No matching email in the UIDs.')
+
 
 
     def __unicode__(self):
@@ -82,7 +86,7 @@ class PGPKey(db.Document):
 
 
 class InstantMessaging(db.Document):
-    handle = db.StringField(max_length=256, primary_key=True)
+    handle = db.StringField(max_length=256, unique=True)
     otr = db.ListField(db.StringField(verbose_name="OTR Fingerprint",
         max_length=64, default=list))
 
@@ -95,7 +99,7 @@ class InstantMessaging(db.Document):
         return self.handle
 
 class CountryCode(db.Document):
-    cc = db.StringField(max_length=4, primary_key=True)
+    cc = db.StringField(max_length=4, unique=True)
     country_name = db.StringField(max_length=128, required=True)
 
     def __unicode__(self):
@@ -135,7 +139,7 @@ class Person(User):
         return True
 
 class Organisation(db.Document):
-    name = db.StringField(max_length=32, primary_key=True)
+    name = db.StringField(max_length=32, unique=True)
     fullname = db.StringField(max_length=1024)
     iscert = db.BooleanField(verbose_name="Is a CERT")
 
@@ -162,8 +166,12 @@ class Organisation(db.Document):
     def __unicode__(self):
         return self.name
 
+class Vouchee(db.EmbeddedDocument):
+    vouchee = db.ReferenceField(User, required=True, unique=True)
+    vouch = db.StringField(required = True)
+
 class Vouch(db.Document):
-    voucher = db.ReferenceField(User, required = True)
+    voucher = db.ReferenceField(User, unique=True)
     # {vouchee1: 'comment', vouchee2: comment...}
-    vouchees = db.DictField()
+    vouchees = db.ListField(db.EmbeddedDocumentField(Vouchee))
 
