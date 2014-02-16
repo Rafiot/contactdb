@@ -11,7 +11,7 @@ from contactdb import db
 from contactdb import gpg
 
 class User(db.Document):
-    username = db.StringField(max_length=64, primary_key=True)
+    username = db.StringField(max_length=64, unique=True)
     password = db.StringField(max_length=128)
 
     meta = {'allow_inheritance': True}
@@ -129,8 +129,6 @@ class Person(User):
     def clean(self):
         self.emails = [ e for e in self.emails if e is not 'mail@example.com']
         self.emails += ['mail@example.com'] *2
-        if self.password is not None:
-            self.set_password(self.password)
         if self.pgpkey is not None:
             for email in self.emails:
                 if email in self.pgpkey.emails:
@@ -167,11 +165,14 @@ class Organisation(db.Document):
         return self.name
 
 class Vouchee(db.EmbeddedDocument):
-    vouchee = db.ReferenceField(User, required=True, unique=True)
+    vouchee = db.ReferenceField(User, required=True)
     vouch = db.StringField(required = True)
 
 class Vouch(db.Document):
-    voucher = db.ReferenceField(User, unique=True)
+    v = db.StringField()
+    voucher = db.ReferenceField(User, required=True)
     # {vouchee1: 'comment', vouchee2: comment...}
     vouchees = db.ListField(db.EmbeddedDocumentField(Vouchee))
 
+    def clean(self):
+        self.v = self.voucher.username

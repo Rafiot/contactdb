@@ -6,7 +6,6 @@ from contactdb.models import *
 
 person = Person(
         username = 'raphael',
-        password = 'testing',
         firstname = 'Raphael',
         lastname = 'Vinot',
         title = 'Operator',
@@ -93,6 +92,7 @@ pgpkey.save()
 person.pgpkey = pgpkey
 person.organisation.append(o)
 person.im.append(im)
+person.set_password('testing')
 person.save()
 
 o.members.append(person)
@@ -102,7 +102,6 @@ o.save()
 
 person2 = Person(
         username = 'raphael2',
-        password = 'testing',
         firstname = 'Raphael',
         lastname = 'Vinot',
         title = 'Operator',
@@ -114,6 +113,7 @@ person2 = Person(
         timezone = 'CET'
         )
 
+person2.set_password('testing')
 person2.save()
 
 vouch = Vouch(

@@ -45,7 +45,6 @@ class Detail(MethodView):
         return False
 
     def get(self, identifier):
-        print self.pk, identifier
         obj = self.model.objects.get_or_404(**{self.pk: identifier})
         owner = self.is_owner(obj)
         return render_template(os.path.join(self.basename, self.template),

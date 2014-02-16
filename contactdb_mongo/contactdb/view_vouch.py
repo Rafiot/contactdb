@@ -1,12 +1,10 @@
 from contactdb.models import Vouch
 from flask.ext.login import current_user
 from views_abstract import List, Detail, Admin, prepare_blueprint
-from flask import redirect, url_for, request
-
 
 basename = 'vouchs'
 model = Vouch
-pk = 'voucher'
+pk = 'v'
 elemname = 'vouch'
 
 def is_owner(current_user, voucher):
@@ -32,14 +30,12 @@ class VouchsAdmin(Admin):
 
     def __init__(self):
         super(VouchsAdmin, self).__init__(model, basename, pk)
-        self.can_change = False
 
     def is_owner(self, form):
         if form.voucher.data is None:
-            self.can_change = True
+            return True
         else:
-            self.can_change = is_owner(current_user, form.voucher.data.username)
-        return self.can_change
+            return is_owner(current_user, form.voucher.data.username)
 
 
 def get_blueprint():
